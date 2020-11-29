@@ -1,11 +1,16 @@
 ---
 # name of the docker volume that should be created
 docker_volume_name:
+
 # name of the container to retrieve volumes from for backup
 # a temporary backup container will be started with volumes from the given container
+# required when backup should be created by cron job
+# TODO needs better name
 docker_volume_for_container:
 # directories that should be contained in the backup archive file
+# required to contain at least one item when backup should be created by cron job
 docker_volume_backup_dirs: []
+
 # cron job hour
 docker_volume_backup_hour: 4
 # cron job minute, by default a random minute will be generated using the cron job id as seed
