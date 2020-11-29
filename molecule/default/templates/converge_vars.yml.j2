@@ -1,8 +1,11 @@
 ---
 container_image: {{ container_image }}
 container_name: {{ container_name }}
-docker_volume_name: {{ docker_volume_name }}
-docker_volume_backup_dir: {{ docker_volume_backup_dir }}
 container_command: {{ container_command }}
 crontime_minutes_offset: {{ crontime_minutes_offset }}
-docker_volume_backup_sets: {{ docker_volume_backup_sets }}
+
+docker_volume_name: {{ docker_volume_name }}
+docker_volume_for_container: {{ docker_volume_for_container }}
+docker_volume_backup_dirs: {{ docker_volume_backup_dirs }}
+docker_volume_backup_hour: {{ docker_volume_backup_hour }}
+docker_volume_backup_minute: {{ docker_volume_backup_minute }}

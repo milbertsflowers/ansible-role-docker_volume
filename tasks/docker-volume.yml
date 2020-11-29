@@ -10,12 +10,14 @@
   loop:
     - "{{ docker_volume_executable.bin }}"
 
-- name: Register docker volume backup jobs
+- name: Register docker volume backup job
   cron:
     name: "Backup job {{ item.id }}"
     hour: "{{ item.hour }}"
     minute: "{{ item.minute | default(59 | random(seed=item.id)) }}"
-    job: "{{ docker_volume_executable.bin }} {{ docker_volume_executable.args }} {{ item.container }} {{ item.dirs | join(' ') }} >> /var/log/backup-{{ item.container }}.log 2>&1"
+    job: "{{ item.cli }}"
     disabled: "{{ item.disabled | default(false) }}"
     state: "{{ item.state | default('present') }}"
-  loop: "{{ docker_volume_backup_sets }}"
+  with_items:
+    - "{{ docker_volume_backup_cron_job }}"
+  when: docker_volume_backup_cron_job is defined and docker_volume_backup_cron_job.id is defined and docker_volume_backup_cron_job.hour is defined

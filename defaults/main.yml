@@ -1,5 +1,19 @@
 ---
 docker_volume_name:
+docker_volume_for_container:
+docker_volume_backup_dirs: []
+docker_volume_backup_hour:
+docker_volume_backup_minute:
+
 docker_volume_executable:
   bin: /usr/local/bin/docker-volume
-  args: backup
+  command: backup
+  container: "{{ docker_volume_for_container }}"
+  dirs: "{{ docker_volume_backup_dirs }}"
+  logfile: "/var/log/backup-{{ docker_volume_for_container }}.log"
+
+docker_volume_backup_cron_job:
+  id: "backup-{{ docker_volume_for_container }}"
+  hour: "{{ docker_volume_backup_hour }}"
+  minute: "{{ docker_volume_backup_minute }}"
+  cli: "{{ docker_volume_executable.bin }} {{ docker_volume_executable.command }} {{ docker_volume_executable.container }} {{ docker_volume_executable.dirs | join(' ') }} >> {{ docker_volume_executable.logfile }} 2>&1"
