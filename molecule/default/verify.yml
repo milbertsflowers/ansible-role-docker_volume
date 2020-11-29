@@ -14,14 +14,8 @@
       until: not inst.exists or not inst.container.State.Running
       failed_when: not inst.exists or inst.container.State.Running
 
-    - name: stat files
-      stat:
-        path: "{{ item }}"
-      register: stats
-      with_items:
-        - "/tmp/container-data-backup/{{ container_name }}.tar.gz"
-        - "/var/log/backup-{{ container_name }}.log"
+    - include_tasks: tasks/artifacts_stats.yml
     - name: Expect that files exist
       assert:
         that: item.stat.exists
-      with_items: "{{ stats.results }}"
+      with_items: "{{ artifacts_stats.results }}"
