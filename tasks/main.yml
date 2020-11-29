@@ -1,0 +1,5 @@
+---
+- include_tasks: "docker-volume.yml"
+  when: docker_volume_name is defined
+  tags:
+    - docker-volume

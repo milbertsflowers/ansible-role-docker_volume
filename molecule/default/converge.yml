@@ -1,0 +1,35 @@
+---
+- name: Converge
+  hosts: all
+  vars_files:
+    - vars/converge.yml
+    - vars/generate.yml
+  pre_tasks:
+    - name: Stat converge vars file
+      delegate_to: localhost
+      stat:
+        path: "{{ converge_vars_filepath }}"
+      register: converge_vars
+
+    - name: Create converge vars
+      delegate_to: localhost
+      template:
+        src: "{{ playbook_dir }}/templates/converge_vars.yml.j2"
+        dest: "{{ converge_vars_filepath }}"
+      when: not converge_vars.stat.exists
+
+    - include_vars:
+        file: "{{ converge_vars_filepath }}"
+
+  roles:
+    - milbertsflowers.docker_volume
+
+  post_tasks:
+    - name: "Create container"
+      docker_container:
+        command: "{{ container_command }}"
+        image: "{{ container_image }}"
+        name: "{{ container_name }}"
+        state: started
+        volumes:
+          - "{{ docker_volume_name }}:/{{ docker_volume_backup_dir }}"

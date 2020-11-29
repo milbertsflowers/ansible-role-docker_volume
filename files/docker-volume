@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+
+set -e
+echo -e "\nRun at $(date)"
+
+command="$1"
+host_backup_dir=/tmp/container-data-backup
+container_backup_dir=/backup
+container_name="$2"
+container_data_dirs=("${@:3}")
+backup_filename="$container_backup_dir/$container_name.tar.gz"
+host_backup_filename="$host_backup_dir/$(basename "$backup_filename")"
+container_image=alpine
+docker_args=(
+  run
+  --rm
+  -w /
+  -v "$host_backup_dir:$container_backup_dir"
+  --volumes-from "$container_name"
+  "$container_image"
+)
+
+
+# backup files from a docker volume into a compressed archive
+backup() {
+  local restart="false"
+  local exit_code=0
+
+  if ! docker container inspect "$container_name" >/dev/null; then
+    exit 1
+  fi
+
+  restart="$(docker container inspect -f '{{.State.Running}}' "$container_name")"
+  if [ "$restart" == "true" ]; then
+    echo "Stopping container $container_name"
+    docker stop "$container_name"
+  else
+    echo "Container was not running -> no need to stop it"
+  fi
+
+  echo "Creating backup of container data from $container_name in $host_backup_filename"
+  if ! docker "${docker_args[@]}" tar -czvf "$backup_filename" "${container_data_dirs[@]}"; then
+    echo "Backup failed, will try to restore previous container state..."
+    exit_code=1
+  fi
+
+  # start container if was running
+  if [ "$restart" == "true" ]; then
+    echo "Starting container $container_name"
+    docker start "$container_name"
+  else
+    echo "Container $container_name was not running -> no need to start it"
+  fi
+  exit "$exit_code"
+}
+
+# restore files from a compressed archive into a docker volume
+restore() {
+  docker "${docker_args[@]}" tar -xzvf "$backup_filename" "${@:2}"
+  echo "Restored files:"
+  docker "${docker_args[@]}" ls -lh "${@:2}"
+}
+
+mkdir -p $host_backup_dir
+"$command" "$container_name" "${container_data_dirs[@]}"

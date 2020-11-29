@@ -1,0 +1,10 @@
+---
+- name: Local Cleanup
+  hosts: localhost
+  vars_files:
+    - vars/generate.yml
+  tasks:
+    - name: Destroy converge vars
+      file:
+        path: "{{ converge_vars_filepath }}"
+        state: absent

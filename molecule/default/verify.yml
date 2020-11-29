@@ -1,0 +1,27 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  vars_files:
+    - generated_vars/converge.yml
+  tasks:
+    - name: "Wait for container '{{ container_name }}' to stop"
+      docker_container_info:
+        name: "{{ container_name }}"
+      register: inst
+      retries: "{{ 60 * crontime_minutes_offset | int }}"
+      delay: 1
+      until: not inst.exists or not inst.container.State.Running
+      failed_when: not inst.exists or inst.container.State.Running
+
+    - name: stat files
+      stat:
+        path: "{{ item }}"
+      register: stats
+      with_items:
+        - "/tmp/container-data-backup/{{ container_name }}.tar.gz"
+        - "/var/log/backup-{{ container_name }}.log"
+    - name: Expect that files exist
+      assert:
+        that: item.stat.exists
+      with_items: "{{ stats.results }}"
