@@ -1,0 +1,14 @@
+container_image: alpine
+container_name: "{{ container_image }}-container"
+docker_volume_name: "{{ container_image }}-data"
+docker_volume_backup_dir: data
+container_command: "tail -f /dev/null"
+crontime_minutes_offset: 2
+docker_volume_backup_sets:
+  - id: "{{ container_name }}"
+    container: "{{ container_name }}"
+    dirs:
+      - "{{ docker_volume_backup_dir }}"
+    hour: "*"
+    minute: "{{ ansible_date_time.minute | int + crontime_minutes_offset | int }}"
+    volume: "{{ docker_volume_name }}"

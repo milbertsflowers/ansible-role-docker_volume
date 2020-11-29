@@ -1,0 +1,4 @@
+---
+docker_install_compose: false
+pip_install_packages:
+  - docker

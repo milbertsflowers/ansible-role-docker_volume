@@ -1,0 +1,4 @@
+---
+- role: geerlingguy.docker
+- role: geerlingguy.pip
+- role: weareinteractive.cron

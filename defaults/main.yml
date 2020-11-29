@@ -1,0 +1,5 @@
+---
+docker_volume_name:
+docker_volume_executable:
+  bin: /usr/local/bin/docker-volume
+  args: backup
