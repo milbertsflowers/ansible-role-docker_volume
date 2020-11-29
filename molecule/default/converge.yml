@@ -32,4 +32,4 @@
         name: "{{ container_name }}"
         state: started
         volumes:
-          - "{{ docker_volume_name }}:/{{ docker_volume_backup_dir }}"
+          - "{{ docker_volume_name }}:/{{ docker_volume_backup_dirs[0] }}"
