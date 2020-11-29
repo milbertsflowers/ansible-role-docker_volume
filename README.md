@@ -16,18 +16,7 @@ See [`molecule/default/requirements.yml`](molecule/default/requirements.yml).
 Role Variables
 --------------
 
-```yaml
----
-# name of the docker volume that should be created
-docker_volume_name: container-data
-
-# docker volume interaction script configuration  
-docker_volume_executable:
-  # path to script that will take care of the interaction with the docker volume
-  bin: /usr/local/bin/docker-volume
-  # args that will be passed to the script when triggered by cronjob
-  args: backup
-```
+See [`defaults/main.yml`](defaults/main.yml).
 
 Dependencies
 ------------
