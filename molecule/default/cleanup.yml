@@ -23,13 +23,9 @@
         docker_volume:
           name: "{{ docker_volume_name }}"
           state: absent
+      - name: "Remove crontab"
+        command: crontab -r
       when: docker_volume_for_container is defined
-
-    - name: "Remove crontab"
-      command: crontab -r
-      register: result
-      failed_when: result.rc == 1 and result.stderr != "no crontab for root"
-      changed_when: result.rc == 0
 
 - name: Local Cleanup
   hosts: localhost
