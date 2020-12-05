@@ -24,7 +24,7 @@
         file: "{{ converge_vars_filepath }}"
 
   roles:
-    - milbertsflowers.docker_volume
+    - ansible-role-docker_volume
 
   post_tasks:
     - name: "Create container"
