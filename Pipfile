@@ -8,6 +8,8 @@ verify_ssl = true
 [packages]
 ansible = "*"
 molecule = {extras = ["docker", "lint"], version = "*"}
+yamllint = "*"
+flake8 = "*"
 
 [requires]
 python_version = "3.9"
