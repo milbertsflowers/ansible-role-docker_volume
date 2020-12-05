@@ -3,7 +3,8 @@
   hosts: all
   gather_facts: false
   tasks:
-    - include_vars:
+    - name: Load converge config from generated vars file
+      include_vars:
         file: generated_vars/converge.yml
       failed_when: false
 
