@@ -16,6 +16,7 @@
       template:
         src: "{{ playbook_dir }}/templates/converge_vars.yml.j2"
         dest: "{{ converge_vars_filepath }}"
+        mode: 0666
       when: not converge_vars.stat.exists
 
     - include_vars:
