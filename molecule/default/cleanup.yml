@@ -3,30 +3,35 @@
   hosts: all
   gather_facts: false
   tasks:
-    - name: Load converge config from generated vars file
-      include_vars:
-        file: generated_vars/converge.yml
-      failed_when: false
-
     - block:
-      - include_tasks: tasks/artifacts_stats.yml
-      - name: Remove artifact
-        file:
-          path: "{{ item.stat.path }}"
-          state: absent
-        when: item.stat.exists
-        with_items: "{{ artifacts_stats.results }}"
-      - name: Remove container
-        docker_container:
-          name: "{{ docker_volume_for_container }}"
-          state: absent
-      - name: Remove volume
-        docker_volume:
-          name: "{{ docker_volume_name }}"
-          state: absent
-      - name: "Remove crontab"
-        command: crontab -r
-      when: docker_volume_for_container is defined
+      - name: Load converge config from generated vars file
+        include_vars:
+          file: generated_vars/converge.yml
+        failed_when: false
+
+      - block:
+        - include_tasks: tasks/artifacts_stats.yml
+        - name: Remove artifact
+          file:
+            path: "{{ item.stat.path }}"
+            state: absent
+          when: item.stat.exists
+          with_items: "{{ artifacts_stats.results }}"
+        - name: Remove container
+          docker_container:
+            name: "{{ docker_volume_for_container }}"
+            state: absent
+        - name: Remove volume
+          docker_volume:
+            name: "{{ docker_volume_name }}"
+            state: absent
+        - name: "Remove crontab"
+          command: crontab -r
+        when: docker_volume_for_container is defined
+      rescue:
+        - name: Rescue
+          debug:
+            msg: 'Could not cleanup instance. Checkout output above this line for more details.'
 
 - name: Local Cleanup
   hosts: localhost
