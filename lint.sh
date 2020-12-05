@@ -3,3 +3,5 @@
 set -e
 
 ansible-lint --exclude "$HOME/.ansible/roles"
+yamllint .
+flake8
