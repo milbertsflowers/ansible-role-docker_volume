@@ -5,8 +5,8 @@
   when: docker_volume_name is defined
 
 - name: Copy backup/restore scripts
-  copy:
-    src: "{{ item | basename }}"
+  template:
+    src: docker-volume.j2
     dest: "{{ item }}"
     mode: +x
   loop:

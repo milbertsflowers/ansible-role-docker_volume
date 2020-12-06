@@ -8,7 +8,7 @@ commands=(
   restore
   help
 )
-host_backup_dir=/tmp/container-data-backup
+host_backup_dir={{ docker_volume_host_backup_dir }}
 container_backup_dir=/backup
 container_name="$2"
 container_data_dirs=("${@:3}")
@@ -41,7 +41,7 @@ backup() {
     exit 1
   fi
 
-  restart="$(docker container inspect -f '{{.State.Running}}' "$container_name")"
+  restart="$(docker container inspect -f '{% raw %}{{{% endraw %}.State.Running}}' "$container_name")"
   if [ "$restart" == "true" ]; then
     echo "Stopping container $container_name"
     docker stop "$container_name"
