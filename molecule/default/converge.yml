@@ -16,13 +16,15 @@
       template:
         src: "{{ playbook_dir }}/templates/converge_vars.yml.j2"
         dest: "{{ converge_vars_filepath }}"
+        mode: 0666
       when: not converge_vars.stat.exists
 
-    - include_vars:
+    - name: Load converge config from generated vars file
+      include_vars:
         file: "{{ converge_vars_filepath }}"
 
   roles:
-    - milbertsflowers.docker_volume
+    - ansible-role-docker_volume
 
   post_tasks:
     - name: "Create container"
