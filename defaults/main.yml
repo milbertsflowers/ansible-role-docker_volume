@@ -16,6 +16,9 @@ docker_volume_backup_hour: 4
 # cron job minute, by default a random minute will be generated using the cron job id as seed
 docker_volume_backup_minute:
 
+# path to the directory where docker volume data should be stored
+docker_volume_host_backup_dir: /tmp/container-data-backup
+
 docker_volume_executable:
   bin: /usr/local/bin/docker-volume
   command: backup

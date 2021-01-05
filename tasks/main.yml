@@ -2,11 +2,11 @@
 - name: "Create docker volume {{ docker_volume_name }}"
   docker_volume:
     name: "{{ docker_volume_name }}"
-  when: docker_volume_name is defined
+  when: docker_volume_name is defined and docker_volume_name is not none
 
 - name: Copy backup/restore scripts
-  copy:
-    src: "{{ item | basename }}"
+  template:
+    src: docker-volume.j2
     dest: "{{ item }}"
     mode: +x
   loop:
